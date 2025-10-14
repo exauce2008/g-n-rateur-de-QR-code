@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur QR Code Gratuit - QRGenerator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>QRGenerator</h2>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link active">🏠 Accueil</a>
+                <a href="about.html" class="nav-link">ℹ️ À Propos</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Section Authentification -->
+    <div class="auth-section" id="auth-section">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h3>🔐 Connectez-vous pour plus de fonctionnalités</h3>
+                <p>Générations illimitées • Historique sauvegardé • Préférences</p>
+            </div>
+            
+            <div class="auth-buttons">
+                <button class="auth-btn google-auth" onclick="signInWithGoogle()">
+                    <span class="auth-icon">🔍</span>
+                    Continuer avec Google
+                </button>
+                
+                <button class="auth-btn facebook-auth" onclick="signInWithFacebook()">
+                    <span class="auth-icon">📘</span>
+                    Continuer avec Facebook
+                </button>
+                
+                <button class="auth-btn apple-auth" onclick="signInWithApple()">
+                    <span class="auth-icon">🍎</span>
+                    Continuer avec Apple
+                </button>
+                
+                <button class="auth-btn guest-auth" onclick="continueAsGuest()">
+                    <span class="auth-icon">🚀</span>
+                    Continuer sans compte
+                </button>
+            </div>
+            
+            <div class="auth-benefits">
+                <h4>🎯 Avantages de la connexion :</h4>
+                <ul>
+                    <li>✅ Générations illimitées</li>
+                    <li>✅ Historique sauvegardé</li>
+                    <li>✅ QR codes personnalisés</li>
+                    <li>✅ Synchronisation multi-appareils</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profil Utilisateur -->
+    <div class="user-profile" id="user-profile" style="display: none;">
+        <div class="profile-header">
+            <img id="user-avatar" src="https://via.placeholder.com/60/6B7280/FFFFFF?text=?" alt="Avatar" class="user-avatar">
+            <div class="user-info">
+                <h3 id="user-name">Utilisateur</h3>
+                <p id="user-email">email@example.com</p>
+            </div>
+            <button class="logout-btn" onclick="signOut()">🚪 Déconnexion</button>
+        </div>
+        
+        <div class="user-stats">
+            <div class="user-stat">
+                <span class="stat-number" id="user-qr-count">0</span>
+                <span class="stat-label">QR Codes générés</span>
+            </div>
+            <div class="user-stat">
+                <span class="stat-number" id="user-premium">Non</span>
+                <span class="stat-label">Statut Premium</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Bannière pub en haut -->
+        <div class="ad-banner top-ad">
+            <div class="ad-placeholder">
+                <span>📢 Espace publicitaire</span>
+                <small>Publicité nous aide à garder le service gratuit</small>
+            </div>
+        </div>
+        
+        <h1>Générateur QR Code <span class="free-badge">GRATUIT</span></h1>
+        
+        <!-- Compteur d'utilisation -->
+        <div class="usage-counter" id="usage-counter">
+            <div class="counter-text">
+                <span id="remaining-count">2</span> générations gratuites aujourd'hui
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <div class="quick-examples">
+            <h4>🚀 Liens Rapides</h4>
+            <div class="example-buttons">
+                <button class="example-btn" data-url="https://www.google.com">🌐 Google</button>
+                <button class="example-btn" data-url="https://www.youtube.com">📺 YouTube</button>
+                <button class="example-btn" data-url="https://www.github.com">💻 GitHub</button>
+                <button class="example-btn" data-url="https://www.wikipedia.org">📚 Wikipedia</button>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label for="url">Entrez votre URL :</label>
+            <input type="url" id="url" placeholder="https://example.com" required>
+        </div>
+        
+        <!-- Validation URL -->
+        <div class="url-validation" id="url-validation">
+            <div class="validation-item" id="valid-format">
+                <span class="validation-icon">⏳</span>
+                <span class="validation-text">Format URL valide</span>
+            </div>
+            <div class="validation-item" id="valid-protocol">
+                <span class="validation-icon">⏳</span>
+                <span class="validation-text">Protocole sécurisé</span>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button id="generate-btn" class="primary-btn">✨ Générer QR Code</button>
+            <button id="clear-btn" class="secondary-btn">🗑️ Effacer</button>
+        </div>
+
+        <!-- Options Avancées -->
+        <div class="advanced-options">
+            <div class="options-toggle">
+                <button id="options-btn" class="options-btn" onclick="toggleOptions()">
+                    ⚙️ Options avancées
+                </button>
+            </div>
+            
+            <div class="options-content" id="options-content" style="display: none;">
+                <div class="option-group">
+                    <label for="qr-size">Taille du QR Code:</label>
+                    <input type="range" id="qr-size" min="100" max="300" value="200" class="slider">
+                    <span id="size-value">200px</span>
+                </div>
+                
+                <div class="option-group">
+                    <label for="qr-color">Couleur du QR Code:</label>
+                    <input type="color" id="qr-color" value="#000000" class="color-picker">
+                </div>
+                
+                <div class="option-group">
+                    <label for="qr-bg-color">Couleur de fond:</label>
+                    <input type="color" id="qr-bg-color" value="#ffffff" class="color-picker">
+                </div>
+                
+                <div class="option-group">
+                    <label for="qr-style">Style des points:</label>
+                    <select id="qr-style" class="style-selector">
+                        <option value="square">Carrés</option>
+                        <option value="rounded">Arrondis</option>
+                        <option value="dots">Points</option>
+                        <option value="classy">Élégant</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pub au milieu -->
+        <div class="ad-banner middle-ad">
+            <div class="ad-placeholder">
+                <span>🎯 Publicité</span>
+                <small>2 générations gratuites par jour</small>
+            </div>
+        </div>
+        
+        <!-- Conteneur QR Code -->
+        <div class="qr-container" id="qr-container">
+            <canvas id="qrcode-canvas"></canvas>
+            
+            <!-- Informations techniques -->
+            <div class="tech-info">
+                <details>
+                    <summary>🔍 Informations techniques</summary>
+                    <div class="tech-grid">
+                        <div class="tech-item">
+                            <strong>Type:</strong>
+                            <span id="info-type">QR Code</span>
+                        </div>
+                        <div class="tech-item">
+                            <strong>Version:</strong>
+                            <span id="info-version">1</span>
+                        </div>
+                        <div class="tech-item">
+                            <strong>Correction d'erreur:</strong>
+                            <span id="info-ecc">L (7%)</span>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            
+            <button id="download-btn" class="download-btn secondary-btn">📥 Télécharger</button>
+        </div>
+
+        <!-- Section Partage -->
+        <div class="share-section" id="share-section">
+            <h4>🔗 Partager ce QR Code</h4>
+            <div class="share-buttons">
+                <button class="share-btn whatsapp" onclick="shareOnWhatsApp()">💚 WhatsApp</button>
+                <button class="share-btn copy" onclick="copyQRCode()">📋 Copier le lien</button>
+            </div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="stats-container" id="stats-container">
+            <div class="stats-header">
+                <h3>📈 Statistiques</h3>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-generated">0</div>
+                    <div class="stat-label">QR Codes générés</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="last-generated">-</div>
+                    <div class="stat-label">Dernière génération</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="url-length">0</div>
+                    <div class="stat-label">Longueur URL</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Badge Performance -->
+        <div class="performance-badge">
+            <div class="badge-icon">⚡</div>
+            <div class="badge-content">
+                <div class="badge-title">Performance</div>
+                <div class="badge-value" id="generation-time">0ms</div>
+            </div>
+        </div>
+
+        <!-- Section simple pour future version premium -->
+        <div class="simple-upsell">
+            <p>💡 <strong>Astuce :</strong> Connectez-vous pour des générations illimitées !</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 QRGenerator. Service 100% gratuit.</p>
+            <div class="footer-links">
+                <a href="about.html">À Propos</a>
+                <a href="#privacy" onclick="showPrivacyMessage()">Confidentialité</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal limite atteinte -->
+    <div class="modal" id="limit-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3>🎯 Limite Gratuite Atteinte</h3>
+            <p>Vous avez utilisé vos <strong>2 générations gratuites</strong> aujourd'hui.</p>
+            <p>Connectez-vous pour des générations illimitées !</p>
+            <div class="modal-options">
+                <button class="modal-btn primary-btn" onclick="closeModal()">
+                    👍 Compris
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
